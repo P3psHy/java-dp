@@ -1,4 +1,4 @@
-package fr.sdv.facory;
+package fr.sdv.factory;
 
 import org.junit.Before;
 import org.junit.Test;

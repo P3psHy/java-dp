@@ -1,4 +1,4 @@
-package org.sebsy.strategy;
+package fr.sdv.strategy.old;
 
 public class Tri {
 
