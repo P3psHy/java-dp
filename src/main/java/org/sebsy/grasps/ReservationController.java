@@ -1,16 +1,9 @@
 package org.sebsy.grasps;
 
-import org.sebsy.grasps.beans.Client;
 import org.sebsy.grasps.beans.Reservation;
-import org.sebsy.grasps.beans.TypeReservation;
 import org.sebsy.grasps.daos.ClientDao;
 import org.sebsy.grasps.daos.TypeReservationDao;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import org.sebsy.grasps.Params;
-import org.sebsy.grasps.beans.Reservation;
 import org.sebsy.grasps.services.ReservationService;
 
 public class ReservationController {

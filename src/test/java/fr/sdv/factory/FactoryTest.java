@@ -3,7 +3,6 @@ package fr.sdv.factory;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.sdv.factory.ElementFactory;
 import fr.sdv.factory.beans.Additif;
 import fr.sdv.factory.beans.Allergene;
 import fr.sdv.factory.beans.Element;

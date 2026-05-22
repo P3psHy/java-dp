@@ -20,7 +20,6 @@ public class CommandeStateTest {
         commande.setMontant(0f);
         commande.setAdresseLivraison(null);
 
-        // important sinon NullPointerException
         List<Produit> produits = new java.util.ArrayList<>();
         commande.setProduits(produits);
     }

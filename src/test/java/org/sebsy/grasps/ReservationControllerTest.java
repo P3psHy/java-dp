@@ -3,7 +3,6 @@ package org.sebsy.grasps;
 import org.junit.Before;
 import org.junit.Test;
 import org.sebsy.grasps.beans.Reservation;
-import org.sebsy.grasps.ReservationController;
 
 import static org.junit.Assert.assertEquals;
 
