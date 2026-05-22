@@ -1,18 +1,17 @@
-package org.sebsy.grasps;
+package fr.sdv.facory;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import fr.sdv.factory.ElementFactory;
+import fr.sdv.factory.beans.Additif;
+import fr.sdv.factory.beans.Allergene;
+import fr.sdv.factory.beans.Element;
+import fr.sdv.factory.beans.Ingredient;
+import fr.sdv.factory.beans.Enum.TYPE_ELEMENT;
+import fr.sdv.factory.beans.Enum.UNITE;
+
 import static org.junit.Assert.*;
-
-
-import org.sebsy.factory.beans.Element;
-import org.sebsy.factory.beans.Ingredient;
-import org.sebsy.factory.beans.Additif;
-import org.sebsy.factory.beans.Allergene;
-import org.sebsy.factory.beans.Enum.UNITE;
-import org.sebsy.factory.beans.Enum.TYPE_ELEMENT;
-import org.sebsy.factory.ElementFactory;
 
 
 public class FactoryTest {

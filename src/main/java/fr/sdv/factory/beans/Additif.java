@@ -1,6 +1,6 @@
-package org.sebsy.factory.beans;
+package fr.sdv.factory.beans;
 
-import org.sebsy.factory.beans.Enum.UNITE;
+import fr.sdv.factory.beans.Enum.UNITE;
 
 public class Additif extends Element {
     public Additif(String nom, double valeur, UNITE unite) {

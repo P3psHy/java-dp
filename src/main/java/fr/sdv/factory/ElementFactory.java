@@ -1,12 +1,11 @@
-package org.sebsy.factory;
+package fr.sdv.factory;
 
-import org.sebsy.factory.beans.Element;
-import org.sebsy.factory.beans.Ingredient;
-import org.sebsy.factory.beans.Additif;
-import org.sebsy.factory.beans.Allergene;
-
-import org.sebsy.factory.beans.Enum.UNITE;
-import org.sebsy.factory.beans.Enum.TYPE_ELEMENT;
+import fr.sdv.factory.beans.Additif;
+import fr.sdv.factory.beans.Allergene;
+import fr.sdv.factory.beans.Element;
+import fr.sdv.factory.beans.Ingredient;
+import fr.sdv.factory.beans.Enum.TYPE_ELEMENT;
+import fr.sdv.factory.beans.Enum.UNITE;
 
 
 public class ElementFactory {
