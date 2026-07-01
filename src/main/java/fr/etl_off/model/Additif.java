@@ -2,14 +2,11 @@ package fr.etl_off.model;
 
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import fr.etl_off.model.Comp.CompProdAddi;
 
+@Entity
 public class Additif {
 
     @Id
@@ -21,6 +18,35 @@ public class Additif {
 
     private double qteMilligrammes;
 
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId()
+    {
+		return this.id;
+	}
+
+
+    public String getNom() {
+        return this.nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public double getQteMilligrammes() {
+        return this.qteMilligrammes;
+    }
+
+    public void setQteMilligrammes(double qteMilligrammes) {
+        this.qteMilligrammes = qteMilligrammes;
+    }
+
     @OneToMany(mappedBy = "additif")
     private List<CompProdAddi> compProdAdditifs;
 }
+
+

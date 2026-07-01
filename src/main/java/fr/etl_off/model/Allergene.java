@@ -10,6 +10,7 @@ public class Allergene {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String nom;
     private double qteMilligrammes;
 
