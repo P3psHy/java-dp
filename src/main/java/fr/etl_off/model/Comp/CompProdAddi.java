@@ -21,4 +21,36 @@ public class CompProdAddi {
     @ManyToOne
     @JoinColumn(name = "additif_id")
     private Additif additif;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public double getQteMilligrammes() {
+        return qteMilligrammes;
+    }
+
+    public void setQteMilligrammes(double qteMilligrammes) {
+        this.qteMilligrammes = qteMilligrammes;
+    }
+
+    public Produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+
+    public Additif getAdditif() {
+        return additif;
+    }
+
+    public void setAdditif(Additif additif) {
+        this.additif = additif;
+    }
 }

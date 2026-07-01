@@ -21,4 +21,36 @@ public class CompProdIngr {
     @ManyToOne
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public double getQteMilligrammes() {
+        return qteMilligrammes;
+    }
+
+    public void setQteMilligrammes(double qteMilligrammes) {
+        this.qteMilligrammes = qteMilligrammes;
+    }
+
+    public Produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+    }
 }
