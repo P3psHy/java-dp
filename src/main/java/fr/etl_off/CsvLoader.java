@@ -1,7 +1,6 @@
 package fr.etl_off;
 
 import fr.etl_off.model.*;
-import fr.etl_off.model.Comp.CompProdAddi;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -93,19 +92,16 @@ public class CsvLoader {
 
                     em.persist(produit);
 
+                    List<Additif> prodAdditifs = new ArrayList<>();
                     if (!addiRaw.isEmpty()) {
                         for (String part : addiRaw.split(",")) {
                             String nom = sanitize(part);
                             if (!nom.isEmpty()) {
-                                Additif additif = getOrCreate(em, additifs, nom, Additif.class);
-                                CompProdAddi link = new CompProdAddi();
-                                link.setProduit(produit);
-                                link.setAdditif(additif);
-                                link.setQteMilligrammes(0);
-                                em.persist(link);
+                                prodAdditifs.add(getOrCreate(em, additifs, nom, Additif.class));
                             }
                         }
                     }
+                    produit.setAdditifs(prodAdditifs);
 
                     em.getTransaction().commit();
                 } catch (Exception e) {

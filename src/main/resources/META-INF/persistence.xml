@@ -5,9 +5,16 @@
     <persistence-unit name="default">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+        <class>fr.etl_off.model.Categorie</class>
+        <class>fr.etl_off.model.Marque</class>
+        <class>fr.etl_off.model.Produit</class>
+        <class>fr.etl_off.model.Ingredient</class>
+        <class>fr.etl_off.model.Additif</class>
+        <class>fr.etl_off.model.Allergene</class>
+
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/TON_DB"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/TON_DB"/>
             <property name="javax.persistence.jdbc.user" value="postgres"/>
             <property name="javax.persistence.jdbc.password" value="root"/>
 

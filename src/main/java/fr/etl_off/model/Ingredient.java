@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.*;
 
-import fr.etl_off.model.Comp.CompProdIngr;
 
 @Entity
 public class Ingredient {
@@ -15,10 +14,8 @@ public class Ingredient {
     @Column(unique = true, nullable = false)
     private String nom;
 
-    private double qteMilligrammes;
-
-    @OneToMany(mappedBy = "ingredient")
-    private List<CompProdIngr> compProdIngredients;
+    @ManyToMany(mappedBy = "ingredients")
+    private List<Produit> produits;
 
     public Long getId() {
         return id;
@@ -36,19 +33,18 @@ public class Ingredient {
         this.nom = nom;
     }
 
-    public double getQteMilligrammes() {
-        return qteMilligrammes;
+    public List<Produit> getProduits() {
+        return produits;
     }
 
-    public void setQteMilligrammes(double qteMilligrammes) {
-        this.qteMilligrammes = qteMilligrammes;
+    public void setProduits(List<Produit> produits) {
+        this.produits = produits;
     }
 
-    public List<CompProdIngr> getCompProdIngredients() {
-        return compProdIngredients;
-    }
-
-    public void setCompProdIngredients(List<CompProdIngr> compProdIngredients) {
-        this.compProdIngredients = compProdIngredients;
+    public void addProduit(Produit produit) {
+        if (this.produits == null) {
+            this.produits = new java.util.ArrayList<>();
+        }
+        this.produits.add(produit);
     }
 }

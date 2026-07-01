@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.*;
 
-import fr.etl_off.model.Comp.CompProdAddi;
 
 @Entity
 public class Additif {
@@ -32,24 +31,21 @@ public class Additif {
         this.nom = nom;
     }
 
-    private double qteMilligrammes;
+    @ManyToMany(mappedBy = "additifs")
+    private List<Produit> produits;
 
-    @OneToMany(mappedBy = "additif")
-    private List<CompProdAddi> compProdAdditifs;
-
-    public double getQteMilligrammes() {
-        return qteMilligrammes;
+    public List<Produit> getProduits() {
+        return produits;
     }
 
-    public void setQteMilligrammes(double qteMilligrammes) {
-        this.qteMilligrammes = qteMilligrammes;
+    public void setProduits(List<Produit> produits) {
+        this.produits = produits;
     }
 
-    public List<CompProdAddi> getCompProdAdditifs() {
-        return compProdAdditifs;
-    }
-
-    public void setCompProdAdditifs(List<CompProdAddi> compProdAdditifs) {
-        this.compProdAdditifs = compProdAdditifs;
+    public void addProduit(Produit produit) {
+        if (this.produits == null) {
+            this.produits = new java.util.ArrayList<>();
+        }
+        this.produits.add(produit);
     }
 }
