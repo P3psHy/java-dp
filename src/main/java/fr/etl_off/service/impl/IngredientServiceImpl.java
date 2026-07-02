@@ -1,5 +1,6 @@
 package fr.etl_off.service.impl;
 
+import fr.etl_off.cache.IngredientCache;
 import fr.etl_off.dao.IngredientDao;
 import fr.etl_off.model.Ingredient;
 import fr.etl_off.service.IngredientService;
@@ -9,17 +10,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * ImplÃ©mentation du service mÃ©tier pour les ingrÃ©dients.
+ * Implémentation du service métier pour les ingrédients.
+ * Utilise un cache mémoire pour éviter les requêtes SQL répétées.
  */
 @Service
 @Transactional
 public class IngredientServiceImpl extends AbstractGenericService<Ingredient, Long> implements IngredientService {
 
     private final IngredientDao ingredientDao;
+    private final IngredientCache ingredientCache;
 
-    public IngredientServiceImpl(IngredientDao ingredientDao) {
+    public IngredientServiceImpl(IngredientDao ingredientDao, IngredientCache ingredientCache) {
         super(ingredientDao);
         this.ingredientDao = ingredientDao;
+        this.ingredientCache = ingredientCache;
     }
 
     @Override
@@ -28,8 +32,14 @@ public class IngredientServiceImpl extends AbstractGenericService<Ingredient, Lo
         if (nom == null || nom.isEmpty()) {
             return null;
         }
-        return ingredientDao.findByNom(nom)
+        Ingredient cached = ingredientCache.getByNom(nom);
+        if (cached != null) {
+            return cached;
+        }
+        Ingredient ingredient = ingredientDao.findByNom(nom)
                 .orElseGet(() -> ingredientDao.save(newIngredient(nom)));
+        ingredientCache.put(ingredient);
+        return ingredient;
     }
 
     @Override

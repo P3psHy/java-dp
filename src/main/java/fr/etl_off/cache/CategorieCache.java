@@ -2,9 +2,11 @@ package fr.etl_off.cache;
 
 import fr.etl_off.model.Categorie;
 
+import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class CategorieCache {
 
     private final Map<Long, Categorie> cacheById = new ConcurrentHashMap<>();

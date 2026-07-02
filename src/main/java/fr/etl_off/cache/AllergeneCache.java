@@ -2,9 +2,11 @@ package fr.etl_off.cache;
 
 import fr.etl_off.model.Allergene;
 
+import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class AllergeneCache {
 
     private final Map<Long, Allergene> cacheById = new ConcurrentHashMap<>();

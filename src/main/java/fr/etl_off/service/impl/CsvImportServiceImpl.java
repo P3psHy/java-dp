@@ -21,13 +21,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * ImplÃ©mentation du service d'importation CSV.
+ * Implémentation du service d'importation CSV.
  * Centralise la logique de nettoyage et de persistence des produits.
+ * Utilise les Virtual Threads (Project Loom) pour paralléliser le traitement des lignes.
  */
 @Service
 public class CsvImportServiceImpl implements CsvImportService {
@@ -63,34 +70,59 @@ public class CsvImportServiceImpl implements CsvImportService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int importCsv(String csvPath, String separator) throws Exception {
-        int processed = 0;
-        int lineNum = 0;
+        long startTime = System.currentTimeMillis();
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuStart = threadBean.getCurrentThreadCpuTime();
+
+        AtomicInteger processed = new AtomicInteger(0);
+        AtomicInteger skipped = new AtomicInteger(0);
+        List<Future<?>> futures = new ArrayList<>();
 
         try (InputStream is = openStream(csvPath);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+             ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
-            String line = reader.readLine(); // en-tÃªte
+            reader.readLine(); // skip header
+            String line;
+            int lineNum = 0;
             while ((line = reader.readLine()) != null) {
                 lineNum++;
-                String[] cols = line.split(separator, -1);
-                if (cols.length < MIN_COLUMNS) {
-                    continue;
-                }
-
-                try {
-                    Produit produit = buildProduit(cols);
-                    produitService.create(produit);
-                    processed++;
-                } catch (Exception e) {
-                    System.err.println("Skipping line " + lineNum + ": " + e.getMessage());
-                }
+                final String currentLine = line;
+                final int currentNum = lineNum;
+                futures.add(executor.submit(() -> {
+                    String[] cols = currentLine.split(separator, -1);
+                    if (cols.length < MIN_COLUMNS) {
+                        skipped.incrementAndGet();
+                        return;
+                    }
+                    try {
+                        Produit produit = buildProduit(cols);
+                        produitService.create(produit);
+                        processed.incrementAndGet();
+                    } catch (Exception e) {
+                        skipped.incrementAndGet();
+                        System.err.println("Skipping line " + currentNum + ": " + e.getMessage());
+                    }
+                }));
             }
         }
 
-        System.out.println("CSV import done: " + processed + " products processed.");
-        return processed;
+        long elapsed = System.currentTimeMillis() - startTime;
+        long cpuMs = (threadBean.getCurrentThreadCpuTime() - cpuStart) / 1_000_000;
+        Runtime rt = Runtime.getRuntime();
+        long usedMemMb = (rt.totalMemory() - rt.freeMemory()) / (1024 * 1024);
+
+        System.out.printf("=== ETL Performance Report ===%n");
+        System.out.printf("  Products processed : %d%n", processed.get());
+        System.out.printf("  Lines skipped      : %d%n", skipped.get());
+        System.out.printf("  Total time         : %d ms (%.2f s)%n", elapsed, elapsed / 1000.0);
+        System.out.printf("  CPU time (main)    : %d ms%n", cpuMs);
+        System.out.printf("  Heap used          : %d MB%n", usedMemMb);
+        System.out.printf("  Active threads     : %d%n", Thread.activeCount());
+        System.out.printf("===============================%n");
+
+        return processed.get();
     }
 
     private InputStream openStream(String csvPath) throws IOException {
@@ -165,7 +197,7 @@ public class CsvImportServiceImpl implements CsvImportService {
             return result;
         }
 
-        for (String part : raw.split("[,;|-]")) {
+        for (String part : raw.split("[,;|\\-]")) {
             String cleaned = sanitize(part);
             if (!cleaned.isEmpty()) {
                 result.add(cleaned);
@@ -175,20 +207,20 @@ public class CsvImportServiceImpl implements CsvImportService {
     }
 
     /**
-     * Nettoie une chaÃ®ne de caractÃ¨res : trim, retrait des underscores, astÃ©risques,
-     * des contenus entre parenthÃ¨ses et des pourcentages.
+     * Nettoie une chaîne de caractères : trim, retrait des underscores, astérisques,
+     * des contenus entre parenthèses et des pourcentages.
      *
-     * @param input la chaÃ®ne brute
-     * @return la chaÃ®ne nettoyÃ©e
+     * @param input la chaîne brute
+     * @return la chaîne nettoyée
      */
     private String sanitize(String input) {
         if (input == null) {
             return "";
         }
         String cleaned = input
-                .replaceAll("\\([^)]*\\)", "")      // parenthÃ¨ses
-                .replaceAll("\\d+\\s*%", "")        // pourcentages
-                .replaceAll("[%*_]", "")             // caractÃ¨res parasites
+                .replaceAll("\\([^)]*\\)", "")
+                .replaceAll("\\d+\\s*%", "")
+                .replaceAll("[%*_]", "")
                 .trim();
         return cleaned;
     }
