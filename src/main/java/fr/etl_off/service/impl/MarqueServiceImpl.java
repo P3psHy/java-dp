@@ -26,7 +26,7 @@ public class MarqueServiceImpl extends AbstractGenericService<Marque, Long> impl
 
     @Override
     @Transactional
-    public Marque getOrCreate(String nom) {
+    public synchronized Marque getOrCreate(String nom) {
         if (nom == null || nom.isEmpty()) {
             return null;
         }

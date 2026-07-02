@@ -28,7 +28,7 @@ public class IngredientServiceImpl extends AbstractGenericService<Ingredient, Lo
 
     @Override
     @Transactional
-    public Ingredient getOrCreate(String nom) {
+    public synchronized Ingredient getOrCreate(String nom) {
         if (nom == null || nom.isEmpty()) {
             return null;
         }

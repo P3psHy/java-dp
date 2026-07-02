@@ -28,7 +28,7 @@ public class AdditifServiceImpl extends AbstractGenericService<Additif, Long> im
 
     @Override
     @Transactional
-    public Additif getOrCreate(String nom) {
+    public synchronized Additif getOrCreate(String nom) {
         if (nom == null || nom.isEmpty()) {
             return null;
         }

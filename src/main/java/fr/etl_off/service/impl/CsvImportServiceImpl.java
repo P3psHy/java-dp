@@ -28,13 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Implémentation du service d'importation CSV.
- * Centralise la logique de nettoyage et de persistence des produits.
  * Utilise les Virtual Threads (Project Loom) pour paralléliser le traitement des lignes.
+ * Un semaphore limite la concurrence pour ne pas saturer le pool de connexions JPA.
  */
 @Service
 public class CsvImportServiceImpl implements CsvImportService {
@@ -47,6 +47,9 @@ public class CsvImportServiceImpl implements CsvImportService {
     private static final int IDX_INGREDIENTS = 4;
     private static final int IDX_ALLERGENES = 28;
     private static final int IDX_ADDITIFS = 29;
+
+    /** Limite le nombre de threads actifs simultanément pour ne pas dépasser le pool de connexions. */
+    private static final int MAX_CONCURRENT = 10;
 
     private final ProduitService produitService;
     private final CategorieService categorieService;
@@ -77,7 +80,8 @@ public class CsvImportServiceImpl implements CsvImportService {
 
         AtomicInteger processed = new AtomicInteger(0);
         AtomicInteger skipped = new AtomicInteger(0);
-        List<Future<?>> futures = new ArrayList<>();
+        Semaphore semaphore = new Semaphore(MAX_CONCURRENT);
+        List<java.util.concurrent.Future<?>> futures = new ArrayList<>();
 
         try (InputStream is = openStream(csvPath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
@@ -90,19 +94,22 @@ public class CsvImportServiceImpl implements CsvImportService {
                 lineNum++;
                 final String currentLine = line;
                 final int currentNum = lineNum;
+                semaphore.acquire();
                 futures.add(executor.submit(() -> {
-                    String[] cols = currentLine.split(separator, -1);
-                    if (cols.length < MIN_COLUMNS) {
-                        skipped.incrementAndGet();
-                        return;
-                    }
                     try {
+                        String[] cols = currentLine.split(separator, -1);
+                        if (cols.length < MIN_COLUMNS) {
+                            skipped.incrementAndGet();
+                            return;
+                        }
                         Produit produit = buildProduit(cols);
                         produitService.create(produit);
                         processed.incrementAndGet();
                     } catch (Exception e) {
                         skipped.incrementAndGet();
                         System.err.println("Skipping line " + currentNum + ": " + e.getMessage());
+                    } finally {
+                        semaphore.release();
                     }
                 }));
             }
@@ -196,7 +203,6 @@ public class CsvImportServiceImpl implements CsvImportService {
         if (StringUtils.isBlank(raw)) {
             return result;
         }
-
         for (String part : raw.split("[,;|\\-]")) {
             String cleaned = sanitize(part);
             if (!cleaned.isEmpty()) {
@@ -217,12 +223,11 @@ public class CsvImportServiceImpl implements CsvImportService {
         if (input == null) {
             return "";
         }
-        String cleaned = input
+        return input
                 .replaceAll("\\([^)]*\\)", "")
                 .replaceAll("\\d+\\s*%", "")
                 .replaceAll("[%*_]", "")
                 .trim();
-        return cleaned;
     }
 
     private String clean(String value) {

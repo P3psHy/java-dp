@@ -28,7 +28,7 @@ public class AllergeneServiceImpl extends AbstractGenericService<Allergene, Long
 
     @Override
     @Transactional
-    public Allergene getOrCreate(String nom) {
+    public synchronized Allergene getOrCreate(String nom) {
         if (nom == null || nom.isEmpty()) {
             return null;
         }

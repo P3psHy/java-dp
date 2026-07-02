@@ -26,7 +26,7 @@ public class CategorieServiceImpl extends AbstractGenericService<Categorie, Long
 
     @Override
     @Transactional
-    public Categorie getOrCreate(String nom) {
+    public synchronized Categorie getOrCreate(String nom) {
         if (nom == null || nom.isEmpty()) {
             return null;
         }
