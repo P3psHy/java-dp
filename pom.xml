@@ -5,6 +5,7 @@
 	<groupId>org.sebsy</groupId>
 	<artifactId>java-design-patterns</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+<packaging>war</packaging>
 	<build>
 		<plugins>
 			<plugin>
@@ -82,7 +83,22 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Database -->
+		<!-- JSON -->
+<dependency>
+<groupId>com.fasterxml.jackson.core</groupId>
+<artifactId>jackson-databind</artifactId>
+<version>2.17.1</version>
+</dependency>
+
+<!-- Servlet API -->
+<dependency>
+<groupId>javax.servlet</groupId>
+<artifactId>javax.servlet-api</artifactId>
+<version>4.0.1</version>
+<scope>provided</scope>
+</dependency>
+
+<!-- Database -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
