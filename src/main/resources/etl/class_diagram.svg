@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+    <style>
+        .cls {
+            fill: #fff;
+            stroke: #222;
+            stroke-width: 1.5px;
+        }
+
+        .title {
+            font: bold 14px sans-serif;
+        }
+
+        .field {
+            font: 12px monospace;
+        }
+
+        .assoc {
+            stroke: #555;
+            stroke-width: 1.2px;
+            marker-end: url(#arrow);
+        }
+
+        .mult {
+            font: 12px sans-serif;
+            fill: #222;
+        }
+    </style>
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#555" />
+        </marker>
+    </defs>
+
+    <!-- Produit (center) -->
+    <rect x="350" y="120" width="500" height="300" rx="6" class="cls" />
+    <text x="360" y="145" class="title">Produit</text>
+    <text x="360" y="170" class="field">- id: Long</text>
+    <text x="360" y="190" class="field">- nom: String</text>
+    <text x="360" y="210" class="field">- grade: String</text>
+    <text x="360" y="230" class="field">- marque: Marque</text>
+    <text x="360" y="250" class="field">- categorie: Categorie</text>
+    <text x="360" y="270" class="field">- ingredients: List&lt;Ingredient&gt;</text>
+    <text x="360" y="290" class="field">- allergenes: List&lt;Allergene&gt;</text>
+    <text x="360" y="310" class="field">- additifs: List&lt;Additif&gt;</text>
+    <text x="360" y="330" class="field">- nutrition: energie, graisse, sucres, fibres, proteines, ...</text>
+
+    <!-- Marque (left) -->
+    <rect x="60" y="60" width="220" height="120" rx="6" class="cls" />
+    <text x="70" y="85" class="title">Marque</text>
+    <text x="70" y="105" class="field">- id: Long</text>
+    <text x="70" y="125" class="field">- nom: String</text>
+
+    <!-- Categorie (left bottom) -->
+    <rect x="60" y="220" width="220" height="120" rx="6" class="cls" />
+    <text x="70" y="245" class="title">Categorie</text>
+    <text x="70" y="265" class="field">- id: Long</text>
+    <text x="70" y="285" class="field">- nom: String</text>
+
+    <!-- Ingredient (right top) -->
+    <rect x="920" y="60" width="240" height="120" rx="6" class="cls" />
+    <text x="930" y="85" class="title">Ingredient</text>
+    <text x="930" y="105" class="field">- id: Long</text>
+    <text x="930" y="125" class="field">- nom: String</text>
+
+    <!-- Allergene (right mid) -->
+    <rect x="920" y="220" width="240" height="120" rx="6" class="cls" />
+    <text x="930" y="245" class="title">Allergene</text>
+    <text x="930" y="265" class="field">- id: Long</text>
+    <text x="930" y="285" class="field">- nom: String</text>
+
+    <!-- Additif (right bottom) -->
+    <rect x="920" y="380" width="240" height="120" rx="6" class="cls" />
+    <text x="930" y="405" class="title">Additif</text>
+    <text x="930" y="425" class="field">- id: Long</text>
+    <text x="930" y="445" class="field">- nom: String</text>
+
+    <!-- Associations -->
+    <!-- Produit -> Marque (ManyToOne) -->
+    <line x1="350" y1="200" x2="280" y2="120" class="assoc" />
+    <text x="300" y="100" class="mult">* (many) Produit — 1 Marque</text>
+
+    <!-- Produit -> Categorie (ManyToOne) -->
+    <line x1="360" y1="250" x2="280" y2="280" class="assoc" />
+    <text x="300" y="310" class="mult">* Produit — 1 Categorie</text>
+
+    <!-- Produit -> Ingredient (ManyToMany) -->
+    <line x1="850" y1="200" x2="920" y2="120" class="assoc" />
+    <text x="760" y="90" class="mult">Produit * — * Ingredient</text>
+
+    <!-- Produit -> Allergene (ManyToMany) -->
+    <line x1="830" y1="260" x2="920" y2="260" class="assoc" />
+    <text x="760" y="260" class="mult">Produit * — * Allergene</text>
+
+    <!-- Produit -> Additif (ManyToMany) -->
+    <line x1="830" y1="320" x2="920" y2="440" class="assoc" />
+    <text x="760" y="360" class="mult">Produit * — * Additif</text>
+
+    <!-- Back references (optional) -->
+    <text x="60" y="370" class="field">Note: Marque/Categorie ont une relation 1..* vers Produit (OneToMany)</text>
+    <text x="60" y="390" class="field">Ingredients/Allergenes/Additifs ont une relation *..* vers Produit
+        (ManyToMany)</text>
+
+</svg>

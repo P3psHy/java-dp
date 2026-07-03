@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
+    <style>
+        .box {
+            fill: #fff;
+            stroke: #222;
+            stroke-width: 1.5px;
+        }
+
+        .title {
+            font: bold 13px sans-serif;
+        }
+
+        .col {
+            font: 12px monospace;
+        }
+
+        .fk {
+            fill: #222;
+            font: 12px sans-serif;
+        }
+
+        .note {
+            font: 12px sans-serif;
+            fill: #333;
+        }
+
+        .assoc {
+            stroke: #555;
+            stroke-width: 1.2px;
+            marker-end: url(#arrow);
+        }
+    </style>
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#555" />
+        </marker>
+    </defs>
+
+    <!-- PRODUIT table center -->
+    <rect x="320" y="80" width="460" height="540" rx="6" class="box" />
+    <text x="335" y="105" class="title">PRODUIT</text>
+    <text x="335" y="130" class="col">id : BIGINT PK</text>
+    <text x="335" y="150" class="col">nom : VARCHAR</text>
+    <text x="335" y="170" class="col">grade : VARCHAR</text>
+    <text x="335" y="190" class="col">marque_id : BIGINT FK -> MARQUE(id)</text>
+    <text x="335" y="210" class="col">categorie_id : BIGINT FK -> CATEGORIE(id)</text>
+    <text x="335" y="230" class="col">energie100g : FLOAT</text>
+    <text x="335" y="250" class="col">graisse100g : FLOAT</text>
+    <text x="335" y="270" class="col">sucres100g : FLOAT</text>
+    <text x="335" y="290" class="col">fibres100g : FLOAT</text>
+    <text x="335" y="310" class="col">proteines100g : FLOAT</text>
+    <text x="335" y="330" class="col">sel100g : FLOAT</text>
+    <text x="335" y="350" class="col">vitA100g : FLOAT</text>
+    <text x="335" y="370" class="col">vitD100g : FLOAT</text>
+    <text x="335" y="390" class="col">vitE100g : FLOAT</text>
+    <text x="335" y="410" class="col">vitK100g : FLOAT</text>
+    <text x="335" y="430" class="col">vitC100g : FLOAT</text>
+    <text x="335" y="450" class="col">vitB1100g : FLOAT</text>
+    <text x="335" y="470" class="col">vitB2100g : FLOAT</text>
+    <text x="335" y="490" class="col">vitPP100g : FLOAT</text>
+    <text x="335" y="510" class="col">vitB6100g : FLOAT</text>
+    <text x="335" y="530" class="col">vitB9100g : FLOAT</text>
+    <text x="335" y="550" class="col">vitB12100g : FLOAT</text>
+    <text x="335" y="570" class="col">calcium100g : FLOAT</text>
+    <text x="335" y="590" class="col">magnesium100g : FLOAT</text>
+    <text x="335" y="610" class="col">iron100g : FLOAT</text>
+    <text x="335" y="630" class="col">fer100g : FLOAT</text>
+    <text x="335" y="650" class="col">betaCarotene100g : FLOAT</text>
+    <text x="335" y="670" class="col">presenceHuilePalme : FLOAT</text>
+
+    <!-- MARQUE table left top -->
+    <rect x="60" y="60" width="220" height="120" rx="6" class="box" />
+    <text x="75" y="85" class="title">MARQUE</text>
+    <text x="75" y="105" class="col">id : BIGINT PK</text>
+    <text x="75" y="125" class="col">nom : VARCHAR</text>
+
+    <!-- CATEGORIE table left mid -->
+    <rect x="60" y="220" width="220" height="120" rx="6" class="box" />
+    <text x="75" y="245" class="title">CATEGORIE</text>
+    <text x="75" y="265" class="col">id : BIGINT PK</text>
+    <text x="75" y="285" class="col">nom : VARCHAR</text>
+
+    <!-- INGREDIENT table right top -->
+    <rect x="980" y="60" width="260" height="120" rx="6" class="box" />
+    <text x="995" y="85" class="title">INGREDIENT</text>
+    <text x="995" y="105" class="col">id : BIGINT PK</text>
+    <text x="995" y="125" class="col">nom : VARCHAR</text>
+
+    <!-- ALLERGENE table right mid -->
+    <rect x="980" y="220" width="260" height="120" rx="6" class="box" />
+    <text x="995" y="245" class="title">ALLERGENE</text>
+    <text x="995" y="265" class="col">id : BIGINT PK</text>
+    <text x="995" y="285" class="col">nom : VARCHAR</text>
+
+    <!-- ADDITIF table right bottom -->
+    <rect x="980" y="380" width="260" height="120" rx="6" class="box" />
+    <text x="995" y="405" class="title">ADDITIF</text>
+    <text x="995" y="425" class="col">id : BIGINT PK</text>
+    <text x="995" y="445" class="col">nom : VARCHAR</text>
+
+    <!-- Join tables bottom center -->
+    <rect x="440" y="760" width="200" height="70" rx="6" class="box" />
+    <text x="455" y="785" class="title">produit_ingredient</text>
+    <text x="455" y="805" class="col">produit_id : BIGINT PK, FK -> PRODUIT(id)</text>
+    <text x="455" y="825" class="col">ingredient_id : BIGINT PK, FK -> INGREDIENT(id)</text>
+
+    <rect x="680" y="760" width="200" height="70" rx="6" class="box" />
+    <text x="695" y="785" class="title">produit_allergene</text>
+    <text x="695" y="805" class="col">produit_id : BIGINT PK, FK -> PRODUIT(id)</text>
+    <text x="695" y="825" class="col">allergene_id : BIGINT PK, FK -> ALLERGENE(id)</text>
+
+    <rect x="920" y="760" width="200" height="70" rx="6" class="box" />
+    <text x="935" y="785" class="title">produit_additif</text>
+    <text x="935" y="805" class="col">produit_id : BIGINT PK, FK -> PRODUIT(id)</text>
+    <text x="935" y="825" class="col">additif_id : BIGINT PK, FK -> ADDITIF(id)</text>
+
+    <!-- Associations lines -->
+    <line x1="370" y1="200" x2="200" y2="120" class="assoc" />
+    <text x="230" y="95" class="note">PRODUIT.marque_id -> MARQUE.id (ManyToOne)</text>
+
+    <line x1="370" y1="260" x2="200" y2="280" class="assoc" />
+    <text x="230" y="305" class="note">PRODUIT.categorie_id -> CATEGORIE.id (ManyToOne)</text>
+
+    <line x1="580" y1="640" x2="1040" y2="120" class="assoc" />
+    <text x="860" y="90" class="note">produit_ingredient: produit_id -> PRODUIT.id, ingredient_id ->
+        INGREDIENT.id</text>
+
+    <line x1="640" y1="640" x2="1040" y2="260" class="assoc" />
+    <text x="860" y="260" class="note">produit_allergene: produit_id -> PRODUIT.id, allergene_id -> ALLERGENE.id</text>
+
+    <line x1="700" y1="640" x2="1040" y2="440" class="assoc" />
+    <text x="860" y="360" class="note">produit_additif: produit_id -> PRODUIT.id, additif_id -> ADDITIF.id</text>
+
+    <text x="60" y="930" class="note">Généré depuis les classes Java: tables, colonnes, clés primaires (PK), clés
+        étrangères (FK) et tables d'association ManyToMany.</text>
+
+</svg>
