@@ -1,5 +1,8 @@
 # ETL Open Food Facts — Backend Java
 
+Victor Nourisson
+Martin Chanudet
+
 > Projet réalisé en binôme dans le cadre du cours **Optimisation Backend avec Java** (M2).
 
 ## Description
