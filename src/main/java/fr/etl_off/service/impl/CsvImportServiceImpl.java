@@ -32,8 +32,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Implémentation du service d'importation CSV.
- * Utilise les Virtual Threads (Project Loom) pour paralléliser le traitement des lignes.
+ * Implï¿½mentation du service d'importation CSV.
+ * Utilise les Virtual Threads (Project Loom) pour parallï¿½liser le traitement des lignes.
  * Un semaphore limite la concurrence pour ne pas saturer le pool de connexions JPA.
  */
 @Service
@@ -48,7 +48,7 @@ public class CsvImportServiceImpl implements CsvImportService {
     private static final int IDX_ALLERGENES = 28;
     private static final int IDX_ADDITIFS = 29;
 
-    /** Limite le nombre de threads actifs simultanément pour ne pas dépasser le pool de connexions. */
+    /** Limite le nombre de threads actifs simultanï¿½ment pour ne pas dï¿½passer le pool de connexions. */
     private static final int MAX_CONCURRENT = 10;
 
     private final ProduitService produitService;
@@ -213,11 +213,11 @@ public class CsvImportServiceImpl implements CsvImportService {
     }
 
     /**
-     * Nettoie une chaîne de caractères : trim, retrait des underscores, astérisques,
-     * des contenus entre parenthèses et des pourcentages.
+     * Nettoie une chaï¿½ne de caractï¿½res : trim, retrait des underscores, astï¿½risques,
+     * des contenus entre parenthï¿½ses et des pourcentages.
      *
-     * @param input la chaîne brute
-     * @return la chaîne nettoyée
+     * @param input la chaï¿½ne brute
+     * @return la chaï¿½ne nettoyï¿½e
      */
     private String sanitize(String input) {
         if (input == null) {

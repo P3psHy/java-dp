@@ -1,7 +1,8 @@
 package fr.etl_off.model;
 
 import java.util.List;
-import javax.persistence.*;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Marque {
@@ -14,6 +15,7 @@ public class Marque {
     private String nom;
 
     @OneToMany(mappedBy = "marque")
+    @JsonIgnore
     private List<Produit> produits;
 
     public Long getId() {

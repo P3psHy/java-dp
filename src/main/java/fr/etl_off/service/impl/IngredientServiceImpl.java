@@ -1,7 +1,8 @@
 package fr.etl_off.service.impl;
 
 import fr.etl_off.cache.IngredientCache;
-import fr.etl_off.dao.IngredientDao;
+import fr.etl_off.repository.IngredientRepository;
+import org.springframework.data.domain.PageRequest;
 import fr.etl_off.model.Ingredient;
 import fr.etl_off.service.IngredientService;
 import org.springframework.stereotype.Service;
@@ -10,19 +11,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Implémentation du service métier pour les ingrédients.
- * Utilise un cache mémoire pour éviter les requêtes SQL répétées.
+ * ImplÃ©mentation du service mÃ©tier pour les ingrÃ©dients.
+ * Utilise un cache mÃ©moire pour Ã©viter les requÃªtes SQL rÃ©pÃ©tÃ©es.
  */
 @Service
 @Transactional
 public class IngredientServiceImpl extends AbstractGenericService<Ingredient, Long> implements IngredientService {
 
-    private final IngredientDao ingredientDao;
+    private final IngredientRepository ingredientRepository;
     private final IngredientCache ingredientCache;
 
-    public IngredientServiceImpl(IngredientDao ingredientDao, IngredientCache ingredientCache) {
-        super(ingredientDao);
-        this.ingredientDao = ingredientDao;
+    public IngredientServiceImpl(IngredientRepository ingredientRepository, IngredientCache ingredientCache) {
+        super(ingredientRepository);
+        this.ingredientRepository = ingredientRepository;
         this.ingredientCache = ingredientCache;
     }
 
@@ -36,8 +37,8 @@ public class IngredientServiceImpl extends AbstractGenericService<Ingredient, Lo
         if (cached != null) {
             return cached;
         }
-        Ingredient ingredient = ingredientDao.findByNom(nom)
-                .orElseGet(() -> ingredientDao.save(newIngredient(nom)));
+        Ingredient ingredient = ingredientRepository.findByNom(nom)
+                .orElseGet(() -> ingredientRepository.save(newIngredient(nom)));
         ingredientCache.put(ingredient);
         return ingredient;
     }
@@ -45,7 +46,7 @@ public class IngredientServiceImpl extends AbstractGenericService<Ingredient, Lo
     @Override
     @Transactional(readOnly = true)
     public List<Object[]> findTop(int limit) {
-        return ingredientDao.findTopIngredients(limit);
+        return ingredientRepository.findTopIngredients(PageRequest.of(0, limit));
     }
 
     private Ingredient newIngredient(String nom) {

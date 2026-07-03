@@ -1,26 +1,26 @@
 package fr.etl_off.service.impl;
 
 import fr.etl_off.cache.MarqueCache;
-import fr.etl_off.dao.MarqueDao;
+import fr.etl_off.repository.MarqueRepository;
 import fr.etl_off.model.Marque;
 import fr.etl_off.service.MarqueService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implémentation du service métier pour les marques.
- * Utilise un cache mémoire pour éviter les requêtes SQL répétées.
+ * Implï¿½mentation du service mï¿½tier pour les marques.
+ * Utilise un cache mï¿½moire pour ï¿½viter les requï¿½tes SQL rï¿½pï¿½tï¿½es.
  */
 @Service
 @Transactional
 public class MarqueServiceImpl extends AbstractGenericService<Marque, Long> implements MarqueService {
 
-    private final MarqueDao marqueDao;
+    private final MarqueRepository marqueRepository;
     private final MarqueCache marqueCache;
 
-    public MarqueServiceImpl(MarqueDao marqueDao, MarqueCache marqueCache) {
-        super(marqueDao);
-        this.marqueDao = marqueDao;
+    public MarqueServiceImpl(MarqueRepository marqueRepository, MarqueCache marqueCache) {
+        super(marqueRepository);
+        this.marqueRepository = marqueRepository;
         this.marqueCache = marqueCache;
     }
 
@@ -34,8 +34,8 @@ public class MarqueServiceImpl extends AbstractGenericService<Marque, Long> impl
         if (cached != null) {
             return cached;
         }
-        Marque marque = marqueDao.findByNom(nom)
-                .orElseGet(() -> marqueDao.save(newMarque(nom)));
+        Marque marque = marqueRepository.findByNom(nom)
+                .orElseGet(() -> marqueRepository.save(newMarque(nom)));
         marqueCache.put(marque);
         return marque;
     }

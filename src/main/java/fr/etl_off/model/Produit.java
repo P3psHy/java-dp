@@ -1,6 +1,6 @@
 package fr.etl_off.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import fr.etl_off.model.Additif;
 import fr.etl_off.model.Allergene;

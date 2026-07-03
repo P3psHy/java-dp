@@ -1,7 +1,8 @@
 package fr.etl_off.service.impl;
 
 import fr.etl_off.cache.AdditifCache;
-import fr.etl_off.dao.AdditifDao;
+import fr.etl_off.repository.AdditifRepository;
+import org.springframework.data.domain.PageRequest;
 import fr.etl_off.model.Additif;
 import fr.etl_off.service.AdditifService;
 import org.springframework.stereotype.Service;
@@ -10,19 +11,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Implémentation du service métier pour les additifs.
- * Utilise un cache mémoire pour éviter les requêtes SQL répétées.
+ * Implï¿½mentation du service mï¿½tier pour les additifs.
+ * Utilise un cache mï¿½moire pour ï¿½viter les requï¿½tes SQL rï¿½pï¿½tï¿½es.
  */
 @Service
 @Transactional
 public class AdditifServiceImpl extends AbstractGenericService<Additif, Long> implements AdditifService {
 
-    private final AdditifDao additifDao;
+    private final AdditifRepository additifRepository;
     private final AdditifCache additifCache;
 
-    public AdditifServiceImpl(AdditifDao additifDao, AdditifCache additifCache) {
-        super(additifDao);
-        this.additifDao = additifDao;
+    public AdditifServiceImpl(AdditifRepository additifRepository, AdditifCache additifCache) {
+        super(additifRepository);
+        this.additifRepository = additifRepository;
         this.additifCache = additifCache;
     }
 
@@ -36,8 +37,8 @@ public class AdditifServiceImpl extends AbstractGenericService<Additif, Long> im
         if (cached != null) {
             return cached;
         }
-        Additif additif = additifDao.findByNom(nom)
-                .orElseGet(() -> additifDao.save(newAdditif(nom)));
+        Additif additif = additifRepository.findByNom(nom)
+                .orElseGet(() -> additifRepository.save(newAdditif(nom)));
         additifCache.put(additif);
         return additif;
     }
@@ -45,7 +46,7 @@ public class AdditifServiceImpl extends AbstractGenericService<Additif, Long> im
     @Override
     @Transactional(readOnly = true)
     public List<Object[]> findTop(int limit) {
-        return additifDao.findTopAdditifs(limit);
+        return additifRepository.findTopAdditifs(PageRequest.of(0, limit));
     }
 
     private Additif newAdditif(String nom) {

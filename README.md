@@ -9,8 +9,8 @@ ETL (Extract-Transform-Load) en Java qui ingère le fichier CSV Open Food Facts 
 ## Technologies
 
 - Java 21 (Virtual Threads — Project Loom)
-- Spring Framework 5.3 (Context, ORM, WebMVC)
-- Hibernate 5.6 / JPA 2.2
+- Spring Boot 3.3 (Web, Data JPA)
+- Hibernate 6 / Jakarta Persistence 3.1
 - PostgreSQL 16
 - Docker / Docker Compose
 - Maven
@@ -20,7 +20,7 @@ ETL (Extract-Transform-Load) en Java qui ingère le fichier CSV Open Food Facts 
 - **Cache mémoire** (`ConcurrentHashMap`) sur toutes les entités partagées (catégories, marques, ingrédients, allergènes, additifs) pour éviter les requêtes SQL répétées
 - **Virtual Threads** (Project Loom, Java 21) via `Executors.newVirtualThreadPerTaskExecutor()` pour paralléliser le traitement des lignes CSV
 - **Semaphore** limitant la concurrence à 10 threads actifs simultanément pour ne pas saturer le pool de connexions JPA
-- **Pool de connexions** configuré à 20 connexions dans `persistence.xml`
+- **Pool de connexions** géré par Spring Boot / HikariCP (défaut)
 
 ---
 
@@ -120,24 +120,80 @@ mvn compile exec:java
 
 ---
 
+## Lancer l'API REST
+
+### 1. S'assurer que les données sont importées
+
+Si ce n'est pas déjà fait, lance l'ETL (voir section [Lancer l'ETL](#lancer-letl)) :
+
+```powershell
+.\reset-and-run.ps1
+```
+
+### 2. Démarrer l'application Spring Boot
+
+```powershell
+mvn spring-boot:run
+```
+
+L'API démarre sur **`http://localhost:8082`** (le port 8080 est occupé par Docker/WSL).
+
+### 3. Tester les routes avec Swagger UI
+
+Ouvre dans ton navigateur :
+
+```
+http://localhost:8082/swagger-ui/index.html
+```
+
+Tu peux y lister tous les endpoints, voir les paramètres et exécuter les requêtes directement.
+
+### 4. Tester avec curl (optionnel)
+
+```powershell
+curl "http://localhost:8082/products/top-by-brand?brand=Lagrange&limit=5"
+curl "http://localhost:8082/products/top-by-category?category=Sucres&limit=5"
+curl "http://localhost:8082/ingredients/top?limit=10"
+```
+
+### 5. Arrêter l'application
+
+Appuie sur `Ctrl+C` dans le terminal, ou force la fermeture du processus sur le port 8082 :
+
+```powershell
+Get-NetTCPConnection -LocalPort 8082 | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+```
+
+### Si le port 8082 est déjà occupé
+
+Tu peux changer le port dans `src/main/resources/application.properties` :
+
+```properties
+server.port=8083
+```
+
+Puis relance `mvn spring-boot:run`.
+
+---
+
 ## Structure du projet
 
 ```
 src/
 ├── main/
 │   ├── java/fr/etl_off/
-│   │   ├── cache/          # Caches mémoire (ConcurrentHashMap)
-│   │   ├── config/         # Configuration Spring
-│   │   ├── dao/            # Pattern DAO (une DAO par entité)
-│   │   ├── model/          # Entités JPA
-│   │   ├── service/        # Interfaces métier
-│   │   │   └── impl/       # Implémentations
-│   │   └── CsvLoader.java  # Point d'entrée ETL
+│   │   ├── cache/             # Caches mémoire (ConcurrentHashMap)
+│   │   ├── controller/        # Controllers REST
+│   │   ├── model/             # Entités JPA
+│   │   ├── repository/        # Repositories Spring Data JPA
+│   │   ├── service/           # Interfaces métier
+│   │   │   └── impl/          # Implémentations
+│   │   ├── CsvLoader.java     # Point d'entrée ETL
+│   │   └── EtlOffApplication.java  # Point d'entrée Spring Boot
 │   └── resources/
-│       ├── etl/            # Fichier CSV à placer ici
-│       └── META-INF/
-│           └── persistence.xml
-conception/                 # Diagrammes UML et MLD
+│       ├── etl/               # Fichier CSV à placer ici
+│       └── application.properties
+conception/                    # Diagrammes UML et MLD
 ```
 
 ---

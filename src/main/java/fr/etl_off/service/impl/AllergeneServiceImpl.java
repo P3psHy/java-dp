@@ -1,7 +1,8 @@
 package fr.etl_off.service.impl;
 
 import fr.etl_off.cache.AllergeneCache;
-import fr.etl_off.dao.AllergeneDao;
+import fr.etl_off.repository.AllergeneRepository;
+import org.springframework.data.domain.PageRequest;
 import fr.etl_off.model.Allergene;
 import fr.etl_off.service.AllergeneService;
 import org.springframework.stereotype.Service;
@@ -10,19 +11,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Implémentation du service métier pour les allergènes.
- * Utilise un cache mémoire pour éviter les requêtes SQL répétées.
+ * Implï¿½mentation du service mï¿½tier pour les allergï¿½nes.
+ * Utilise un cache mï¿½moire pour ï¿½viter les requï¿½tes SQL rï¿½pï¿½tï¿½es.
  */
 @Service
 @Transactional
 public class AllergeneServiceImpl extends AbstractGenericService<Allergene, Long> implements AllergeneService {
 
-    private final AllergeneDao allergeneDao;
+    private final AllergeneRepository allergeneRepository;
     private final AllergeneCache allergeneCache;
 
-    public AllergeneServiceImpl(AllergeneDao allergeneDao, AllergeneCache allergeneCache) {
-        super(allergeneDao);
-        this.allergeneDao = allergeneDao;
+    public AllergeneServiceImpl(AllergeneRepository allergeneRepository, AllergeneCache allergeneCache) {
+        super(allergeneRepository);
+        this.allergeneRepository = allergeneRepository;
         this.allergeneCache = allergeneCache;
     }
 
@@ -36,8 +37,8 @@ public class AllergeneServiceImpl extends AbstractGenericService<Allergene, Long
         if (cached != null) {
             return cached;
         }
-        Allergene allergene = allergeneDao.findByNom(nom)
-                .orElseGet(() -> allergeneDao.save(newAllergene(nom)));
+        Allergene allergene = allergeneRepository.findByNom(nom)
+                .orElseGet(() -> allergeneRepository.save(newAllergene(nom)));
         allergeneCache.put(allergene);
         return allergene;
     }
@@ -45,7 +46,7 @@ public class AllergeneServiceImpl extends AbstractGenericService<Allergene, Long
     @Override
     @Transactional(readOnly = true)
     public List<Object[]> findTop(int limit) {
-        return allergeneDao.findTopAllergenes(limit);
+        return allergeneRepository.findTopAllergenes(PageRequest.of(0, limit));
     }
 
     private Allergene newAllergene(String nom) {

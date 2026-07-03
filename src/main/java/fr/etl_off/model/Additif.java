@@ -2,7 +2,8 @@ package fr.etl_off.model;
 
 import java.util.List;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -32,6 +33,7 @@ public class Additif {
     }
 
     @ManyToMany(mappedBy = "additifs")
+    @JsonIgnore
     private List<Produit> produits;
 
     public List<Produit> getProduits() {

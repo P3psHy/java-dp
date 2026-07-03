@@ -1,26 +1,26 @@
 package fr.etl_off.service.impl;
 
 import fr.etl_off.cache.CategorieCache;
-import fr.etl_off.dao.CategorieDao;
+import fr.etl_off.repository.CategorieRepository;
 import fr.etl_off.model.Categorie;
 import fr.etl_off.service.CategorieService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implémentation du service métier pour les catégories.
- * Utilise un cache mémoire pour éviter les requêtes SQL répétées.
+ * Implï¿½mentation du service mï¿½tier pour les catï¿½gories.
+ * Utilise un cache mï¿½moire pour ï¿½viter les requï¿½tes SQL rï¿½pï¿½tï¿½es.
  */
 @Service
 @Transactional
 public class CategorieServiceImpl extends AbstractGenericService<Categorie, Long> implements CategorieService {
 
-    private final CategorieDao categorieDao;
+    private final CategorieRepository categorieRepository;
     private final CategorieCache categorieCache;
 
-    public CategorieServiceImpl(CategorieDao categorieDao, CategorieCache categorieCache) {
-        super(categorieDao);
-        this.categorieDao = categorieDao;
+    public CategorieServiceImpl(CategorieRepository categorieRepository, CategorieCache categorieCache) {
+        super(categorieRepository);
+        this.categorieRepository = categorieRepository;
         this.categorieCache = categorieCache;
     }
 
@@ -34,8 +34,8 @@ public class CategorieServiceImpl extends AbstractGenericService<Categorie, Long
         if (cached != null) {
             return cached;
         }
-        Categorie categorie = categorieDao.findByNom(nom)
-                .orElseGet(() -> categorieDao.save(newCategorie(nom)));
+        Categorie categorie = categorieRepository.findByNom(nom)
+                .orElseGet(() -> categorieRepository.save(newCategorie(nom)));
         categorieCache.put(categorie);
         return categorie;
     }

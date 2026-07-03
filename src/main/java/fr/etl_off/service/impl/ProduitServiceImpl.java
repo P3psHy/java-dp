@@ -1,12 +1,13 @@
 package fr.etl_off.service.impl;
 
-import fr.etl_off.dao.ProduitDao;
 import fr.etl_off.model.Categorie;
 import fr.etl_off.model.Marque;
 import fr.etl_off.model.Produit;
+import fr.etl_off.repository.ProduitRepository;
 import fr.etl_off.service.CategorieService;
 import fr.etl_off.service.MarqueService;
 import fr.etl_off.service.ProduitService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +21,15 @@ import java.util.List;
 @Transactional
 public class ProduitServiceImpl extends AbstractGenericService<Produit, Long> implements ProduitService {
 
-    private final ProduitDao produitDao;
+    private final ProduitRepository produitRepository;
     private final MarqueService marqueService;
     private final CategorieService categorieService;
 
-    public ProduitServiceImpl(ProduitDao produitDao,
+    public ProduitServiceImpl(ProduitRepository produitRepository,
                               MarqueService marqueService,
                               CategorieService categorieService) {
-        super(produitDao);
-        this.produitDao = produitDao;
+        super(produitRepository);
+        this.produitRepository = produitRepository;
         this.marqueService = marqueService;
         this.categorieService = categorieService;
     }
@@ -40,7 +41,7 @@ public class ProduitServiceImpl extends AbstractGenericService<Produit, Long> im
         if (marque == null || marque.getId() == null) {
             return Collections.emptyList();
         }
-        return produitDao.findTopByMarque(marque.getId(), limit);
+        return produitRepository.findTopByMarque(marque.getId(), PageRequest.of(0, limit));
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ProduitServiceImpl extends AbstractGenericService<Produit, Long> im
         if (categorie == null || categorie.getId() == null) {
             return Collections.emptyList();
         }
-        return produitDao.findTopByCategorie(categorie.getId(), limit);
+        return produitRepository.findTopByCategorie(categorie.getId(), PageRequest.of(0, limit));
     }
 
     @Override
@@ -61,6 +62,6 @@ public class ProduitServiceImpl extends AbstractGenericService<Produit, Long> im
         if (marque == null || marque.getId() == null || categorie == null || categorie.getId() == null) {
             return Collections.emptyList();
         }
-        return produitDao.findTopByMarqueAndCategorie(marque.getId(), categorie.getId(), limit);
+        return produitRepository.findTopByMarqueAndCategorie(marque.getId(), categorie.getId(), PageRequest.of(0, limit));
     }
 }

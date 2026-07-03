@@ -2,7 +2,8 @@ package fr.etl_off.model;
 
 import java.util.List;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 
 @Entity
@@ -15,6 +16,7 @@ public class Allergene {
     private String nom;
 
     @ManyToMany(mappedBy = "allergenes")
+    @JsonIgnore
     private List<Produit> produits;
 
     public Long getId() {
